@@ -1,27 +1,23 @@
 <script lang="ts">
-    import {ThemeProvider} from 'nunui';
-    import {setContext} from 'svelte';
-    import api from "$lib/utils/api";
-    import throttle from "$lib/utils/throttle";
-    import ws from "$lib/utils/ws";
-    import {wsStore} from "$lib/utils/store";
+    import {Input, ThemeProvider} from 'nunui';
     import Box from "$lib/Box";
+    import TestEnvInner from "$lib/Env/TestEnvInner.svelte";
 
     export let account;
-
-    setContext('channel', 'test');
-    setContext('account', account);
-    setContext('utils', {
-        api, throttle, ws, wsStore
-    });
+    let channel = 'test';
 </script>
 
 <ThemeProvider primary="#de5095" onPrimary="#000000" onSurface="#ffffff" surface="#000000">
+    <Input placeholder="Channel" bind:value={channel}/>
     <main>
         <nav>
             <Box blur background="radial-gradient(circle at 0 0, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4) 128%)"
                  style="margin-bottom: 10px; padding: 1.5rem 1.875rem 1.875rem 1.875rem;">
-                <slot/>
+                {#key channel}
+                    <TestEnvInner {channel} {account}>
+                        <slot/>
+                    </TestEnvInner>
+                {/key}
             </Box>
         </nav>
     </main>
