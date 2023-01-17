@@ -8,7 +8,9 @@
 {#if showModal}
     <div class="modal" on:click={() => showModal = false} transition:fade>
         <Box center bindWidth background="#ffffff" style="padding: 3.125rem;">
-            <slot/>
+            <div on:click|stopPropagation>
+                <slot/>
+            </div>
         </Box>
     </div>
 {/if}
