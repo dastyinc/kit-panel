@@ -2,12 +2,12 @@
     import {fade} from "svelte/transition";
     import Box from "$lib/Box";
 
-    export let showModal = false;
+    export let showModal = false, style = '';
 </script>
 
 {#if showModal}
     <div class="modal" on:click={() => showModal = false} transition:fade>
-        <Box center bindWidth background="#ffffff" style="padding: 3.125rem;">
+        <Box center bindWidth background="#ffffff" style="padding: 3.125rem;{style}">
             <div on:click|stopPropagation>
                 <slot/>
             </div>
