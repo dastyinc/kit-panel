@@ -6,11 +6,10 @@
     import {wsStore} from "$lib/utils/store";
     import Box from "$lib/Box";
 
+    export let account;
+
     setContext('channel', 'test');
-    setContext('account', {
-        user_id: 1,
-        user_name: 'test'
-    });
+    setContext('account', account);
     setContext('utils', {
         api, throttle, ws, wsStore
     });
