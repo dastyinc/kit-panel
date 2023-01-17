@@ -14,3 +14,5 @@
         api, throttle, ws, wsStore
     });
 </script>
+
+<slot/>

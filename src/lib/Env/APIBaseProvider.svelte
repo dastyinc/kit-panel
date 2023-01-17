@@ -1,11 +1,5 @@
 <script lang="ts" context="module">
     const cache = {};
-
-    window.addEventListener('authRefresh', () => {
-        for (const key in cache) {
-            delete cache[key];
-        }
-    })
 </script>
 
 <script lang="ts">

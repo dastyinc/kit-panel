@@ -8,7 +8,9 @@
 </script>
 
 <ThemeProvider primary="#de5095" onPrimary="#000000" onSurface="#ffffff" surface="#000000">
-    <Input placeholder="Channel" bind:value={channel}/>
+    <span style="z-index: 1;position: relative">
+        <Input placeholder="Channel" bind:value={channel}/>
+    </span>
     <main>
         <nav>
             <Box blur background="radial-gradient(circle at 0 0, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4) 128%)"
@@ -38,7 +40,7 @@
     align-items: center;
     justify-content: center;
     font: normal 16px 'Spoqa Han Sans Neo', 'sans-serif';
-    background: black;
+    background: #222222;
     color: white;
 
     nav {
