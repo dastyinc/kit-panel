@@ -2,9 +2,9 @@
     import {tweened} from "svelte/motion";
     import {quartOut} from "svelte/easing";
 
-    export let bindWidth = false;
+    export let bindWidth = false, dur = 400;
     let clientHeight = 0, clientWidth = 0;
-    const height = tweened(clientHeight, {duration: 400, easing: quartOut});
+    const height = tweened(clientHeight, {duration: dur, easing: quartOut});
 
     $: $height = clientHeight;
 </script>
