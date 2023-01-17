@@ -12,17 +12,16 @@
     import {onDestroy, onMount, setContext, tick} from "svelte";
     import {writable} from "svelte/store";
     import api from "$lib/utils/api";
-    import {newStore} from "$lib/utils/global";
 
-    export let type: string, global = false, defaultValue = {}, noCache = false;
+    export let type: string, defaultValue = {}, noCache = false;
 
-    const object = global ? newStore(type, defaultValue) : writable(<any>defaultValue);
+    const object = writable(<any>defaultValue);
 
     export let id: number, view = '', endpoint = '', nullable = false,
-        load = true, ignore = false, loaded = false, store = object?.store || object;
+        load = true, ignore = false, loaded = false, store = object;
     let ts = Date.now();
 
-    !global && setContext(type, object);
+    setContext(type, object);
     $: _endpoint = endpoint || `/${type}/${id}${view ? `?view=${view}` : ''}`;
 
     $: if ((nullable || id) && load) tick().then(() => {
@@ -67,8 +66,6 @@
         window.addEventListener('authRefresh', refresh);
         return () => window.removeEventListener('authRefresh', refresh);
     })
-
-    onDestroy(() => global && object.del());
 </script>
 
 <slot {...{[type]: $store}} {store} {loaded}/>
