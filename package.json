@@ -12,6 +12,7 @@
     "publish": "npm run build && cd package && npm publish"
   },
   "dependencies": {
+    "nunui": "^0.0.69",
     "reconnecting-websocket": "^4.4.0"
   },
   "devDependencies": {
