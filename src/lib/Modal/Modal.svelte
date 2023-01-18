@@ -1,7 +1,6 @@
 <script lang="ts">
     import {fade} from "svelte/transition";
     import Box from "$lib/Box";
-	import { expand } from "$lib/Box/Box.svelte";
 
     export let showModal = false, style = '', _bindWidth = false, _expand = false;
 </script>

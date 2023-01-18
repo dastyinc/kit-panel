@@ -9,13 +9,15 @@
 <div class="box" class:hoverScale {style} on:click={onClick} style:cursor={hoverCursor ? 'cursor' : ''}
      style:box-shadow={shadow ? '0 10px 10px 0 rgba(0, 0, 0, 0.3)' : ''} style:text-align={textCenter ? 'center' : ''}>
     <div class="background" class:blur style:background={background}></div>
-    {#if expand}
-      <Expand {bindWidth}>
-          <slot/>
-      </Expand>
-    {:else}
-      <slot/>
-    {if}
+    <main style="position:relative;">
+        {#if expand}
+            <Expand {bindWidth}>
+                <slot/>
+            </Expand>
+        {:else}
+            <slot/>
+        {/if}
+    </main>
 </div>
 
 <style lang="scss">
