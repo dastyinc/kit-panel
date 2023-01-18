@@ -1,13 +1,14 @@
 <script lang="ts">
     import {fade} from "svelte/transition";
     import Box from "$lib/Box";
+	import { expand } from "$lib/Box/Box.svelte";
 
-    export let showModal = false, style = '', _bindWidth = false;
+    export let showModal = false, style = '', _bindWidth = false, _expand = false;
 </script>
 
 {#if showModal}
     <div class="modal" on:click={() => showModal = false} transition:fade>
-        <Box center bind:bindWidth={_bindWidth} background="#ffffff" style={style}>
+        <Box center bind:bindWidth={_bindWidth} background="#ffffff" style={style} bind:expand={_expand}>
             <div on:click|stopPropagation>
                 <slot/>
             </div>
