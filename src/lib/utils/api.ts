@@ -1,12 +1,18 @@
 import {writable} from 'svelte/store';
+import {serialize, deserialize} from 'bson';
 
 export const endpoint = import.meta.env.DEV
     ? 'http://localhost:2300'
-    : 'https://api.herewe.space';
+    : import.meta.env.VITE_CI
+        ? 'https://api-ci.herewe.space'
+        : 'https://api.herewe.space';
 
-export const wsUrl = (channel: string) => import.meta.env.DEV
-    ? `ws://localhost:2300/chat/${channel}`
-    : `wss://api.herewe.space/chat/${channel}`;
+export const wsUrl = (channel: string) =>
+    import.meta.env.DEV
+        ? `ws://localhost:2300/chat/${channel}`
+        : import.meta.env.VITE_CI
+            ? `wss://api-ci.herewe.space/chat/${channel}`
+            : `wss://api.herewe.space/chat/${channel}`;
 
 export default function api(
     path: string,
@@ -18,14 +24,16 @@ export default function api(
             credentials: 'include',
             method: data ? method : 'GET',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/bson',
+                'Accept': 'application/bson'
             },
-            body: data ? JSON.stringify(data) : undefined,
+            body: data ? serialize(data) : undefined,
             redirect: 'follow',
             referrerPolicy: 'no-referrer'
         })
-            .then((res) => res.json())
+            .then(async (res) => deserialize(await res.arrayBuffer()))
             .then((res) => {
+                if (import.meta.env.DEV) console.log(`API Call(${path}) : `, res);
                 if (!res.error) resolve(res.data);
                 else reject({...res, toString: () => `APIError(${res.code}): ${res.error}`});
             })
