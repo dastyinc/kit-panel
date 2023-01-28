@@ -1,6 +1,6 @@
 {
   "name": "@dastyinc/kit-panel",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "scripts": {
     "dev": "vite dev",
     "build": "svelte-kit sync && svelte-package",
@@ -12,10 +12,12 @@
     "publish": "npm run build && cd package && npm publish"
   },
   "dependencies": {
+    "@dastyinc/mas101": "^0.0.15",
     "@dastyinc/typed": "^0.3.11",
     "bson": "^4.7.2",
     "nunui": "^0.0.70",
-    "reconnecting-websocket": "^4.4.0"
+    "reconnecting-websocket": "^4.4.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^1.0.2",
