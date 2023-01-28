@@ -1,8 +1,9 @@
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import {writable, readable} from "svelte/store";
 import type {Writable, Readable} from "svelte/store";
-import {wsUrl} from "$lib/utils/api";
-import {makeStoreNotNull, wsStore} from "$lib/utils/store";
+import {wsUrl} from "./api";
+import {makeStoreNotNull, wsStore} from "./store";
+import {ws as wsModule} from "@dastyinc/typed";
 
 interface wsWrapper {
     ws: ReconnectingWebSocket;
@@ -43,13 +44,21 @@ export default function (channel: string, type?: string) {
         }
 
         const ws = new ReconnectingWebSocket(wsUrl(channel) + (type ? '?virtual=1&type=' + type : ''));
+        ws.binaryType = "arraybuffer";
 
         const message = makeStoreNotNull(readable(<any>null, (set) => {
-            ws.addEventListener('message', (e) => {
-                set(JSON.parse(e.data));
-            });
+            const handler = async (e) => {
+                const res = await wsModule.decode(new Uint8Array(e.data));
+                if (import.meta.env.DEV) console.log(`WS Message (${res.type}) : `, res.data)
+                set(res);
+            };
 
-            return () => unsubscribe();
+            ws.addEventListener('message', handler);
+
+            return () => {
+                unsubscribe();
+                ws.removeEventListener('message', handler);
+            }
         }));
 
         const error = readable(<any>null, (set) => {
@@ -58,11 +67,13 @@ export default function (channel: string, type?: string) {
             });
         });
 
-        const send = (data: any) => ws.send(JSON.stringify(data));
+        const send = (type: string, data?: any) => {
+            if (import.meta.env.DEV) console.log(`WS Send (${type}) : `, data)
+            ws.send(wsModule.encode(type, data));
+        }
         const close = () => ws.close();
         const unsubscribe = () => {
             count.set(id, (count.get(id) || 0) - 1);
-            console.log(id, count.get(id));
             if (count.get(id) === 0) {
                 ws.close();
                 stores.delete(id);
@@ -70,9 +81,9 @@ export default function (channel: string, type?: string) {
             }
         }
 
-        const uidReader = (e: MessageEvent) => {
-            const data = JSON.parse(e.data);
-            if (data.type === "CONNECT") {
+        const uidReader = async (e: MessageEvent) => {
+            const {data, type} = await wsModule.decode(new Uint8Array(e.data));
+            if (type === "CONNECT") {
                 const uid = data.id;
                 ws.removeEventListener('message', uidReader);
                 const res = {ws, message, error, send, close, uid, unsubscribe};
@@ -82,13 +93,13 @@ export default function (channel: string, type?: string) {
                 });
                 resolve(res);
             }
-            if (data.type === "ERROR") {
+            if (type === "ERROR") {
                 reject(data);
             }
         }
 
         wsStore(message, 'PING').subscribe(() => {
-            send({type: 'PONG'});
+            send("PING");
             setPingTimeout(id, () => {
                 ws.close();
             });
