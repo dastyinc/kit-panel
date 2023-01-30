@@ -26,6 +26,7 @@
     border-radius: 20px;
     transition: 0.2s;
     position: relative;
+    z-index: 10;
 
     .hoverScale:hover {
       scale: 1.04;
