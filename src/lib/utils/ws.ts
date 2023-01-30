@@ -29,7 +29,7 @@ function setPingTimeout(id: string, closeWs: any) {
     clearTimeout(pingTimeouts.get(id));
     pingTimeouts.set(id, <any>setTimeout(() => {
         closeWs();
-    }, 21000));
+    }, 4000));
 }
 
 export default function (channel: string, type?: string) {
@@ -46,10 +46,19 @@ export default function (channel: string, type?: string) {
         const ws = new ReconnectingWebSocket(wsUrl(channel) + (type ? '?virtual=1&type=' + type : ''));
         ws.binaryType = "arraybuffer";
 
+        const disconnected = writable(false);
+
+        ws.addEventListener('open', () => {
+            disconnected.set(false);
+        });
+        ws.addEventListener('close', () => {
+            disconnected.set(true);
+        });
+
         const message = makeStoreNotNull(readable(<any>null, (set) => {
             const handler = async (e) => {
                 const res = await wsModule.decode(new Uint8Array(e.data));
-                if (import.meta.env.DEV) console.log(`WS Message (${res.type}) : `, res.data)
+                if (import.meta.env.DEV && res.type !== 'PING') console.log(`WS Message (${res.type}) : `, res.data)
                 set(res);
             };
 
@@ -68,10 +77,14 @@ export default function (channel: string, type?: string) {
         });
 
         const send = (type: string, data?: any) => {
-            if (import.meta.env.DEV) console.log(`WS Send (${type}) : `, data)
+            if (import.meta.env.DEV && type !== 'PING') console.log(`WS Send (${type}) : `, data)
             ws.send(wsModule.encode(type, data));
         }
-        const close = () => ws.close();
+        const reconnect = async () => {
+            disconnected.set(true);
+            ws.addEventListener('message', uidReader);
+            ws.reconnect();
+        }
         const unsubscribe = () => {
             count.set(id, (count.get(id) || 0) - 1);
             if (count.get(id) === 0) {
@@ -86,10 +99,10 @@ export default function (channel: string, type?: string) {
             if (type === "CONNECT") {
                 const uid = data.id;
                 ws.removeEventListener('message', uidReader);
-                const res = {ws, message, error, send, close, uid, unsubscribe};
+                const res = {ws, message, error, send, close, uid, unsubscribe, disconnected};
                 stores.set(id, res);
                 setPingTimeout(id, () => {
-                    ws.close();
+                    reconnect();
                 });
                 resolve(res);
             }
@@ -101,7 +114,7 @@ export default function (channel: string, type?: string) {
         wsStore(message, 'PING').subscribe(() => {
             send("PING");
             setPingTimeout(id, () => {
-                ws.close();
+                reconnect();
             });
         });
 
