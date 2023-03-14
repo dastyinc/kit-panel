@@ -12,9 +12,9 @@
         <Input placeholder="Channel" bind:value={channel}/>
     </span>
     <main>
-        <nav>
+        <nav style="margin-bottom: 10px;">
             <Box blur background="radial-gradient(circle at 0 0, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4) 128%)" expand
-                 style="margin-bottom: 10px; padding: 1.5rem 1.875rem 1.875rem 1.875rem;">
+                 style="padding: 1.5rem 1.875rem 1.875rem 1.875rem;">
                 {#key channel}
                     <TestEnvInner {channel} {account}>
                         <slot/>
