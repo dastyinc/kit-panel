@@ -11,7 +11,7 @@
 
 
 <main style:height="{$height}px" style:width={bindWidth ? `${clientWidth}px` : ''}>
-    <div style="position: absolute;width:calc(100% - 3.75rem);" bind:clientHeight>
+    <div style="position: absolute;width:100%;" bind:clientHeight>
         <div style="position: relative" bind:clientWidth style:width={bindWidth ? 'fit-content' : ''}>
             <slot/>
         </div>
