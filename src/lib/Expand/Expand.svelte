@@ -10,11 +10,20 @@
 </script>
 
 
-<main style:height="{$height}px" style:width={bindWidth ? `${clientWidth}px` : ''}
-      style="position: relative;overflow:hidden;margin: -1.875rem;padding:1.875rem;width: 100%;">
+<main style:height="{$height}px" style:width={bindWidth ? `${clientWidth}px` : ''}>
     <div style="position: absolute;width:calc(100% - 3.75rem);" bind:clientHeight>
         <div style="position: relative" bind:clientWidth style:width={bindWidth ? 'fit-content' : ''}>
             <slot/>
         </div>
     </div>
 </main>
+
+<style lang="scss">
+  main {
+    position: relative;
+    overflow: hidden;
+    margin: -1.5rem -1.875rem -1.875rem -1.875rem;
+    padding: 1.875rem;
+    width: 100%;
+  }
+</style>
