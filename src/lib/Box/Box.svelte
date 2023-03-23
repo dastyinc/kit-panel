@@ -6,6 +6,7 @@
     export let onClick = () => null;
 </script>
 
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <div class="box" class:hoverScale {style} on:click={onClick} style:cursor={hoverCursor ? 'cursor' : ''}
      style:box-shadow={shadow ? '0 10px 10px 0 rgba(0, 0, 0, 0.3)' : ''} style:text-align={textCenter ? 'center' : ''}>
     <div class="background" class:blur style:background={background}></div>
