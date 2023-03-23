@@ -13,7 +13,7 @@
     </span>
     <main>
         <nav>
-            <Box background="#1c1c1e" expand style="margin-bottom: 10px;">
+            <Box background="#1c1c1e" expand style="margin-bottom: 10px; border-radius: 20px;">
                 {#key channel}
                     <TestEnvInner {channel} {account}>
                         <slot/>
