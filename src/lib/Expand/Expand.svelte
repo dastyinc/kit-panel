@@ -25,5 +25,6 @@
     margin: -1.5rem -1.875rem -1.875rem -1.875rem;
     padding: 1.875rem;
     width: 100%;
+    border-radius: 20px;
   }
 </style>
